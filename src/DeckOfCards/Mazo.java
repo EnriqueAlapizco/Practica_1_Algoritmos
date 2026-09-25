@@ -24,7 +24,6 @@ public class Mazo {
 
     private void cargarEnOrden(ArrayList<CartaInglesa> orden) {
         cartas.clear();
-        // Apilar al reves deja la primera carta de la lista en el tope.
         for (int i = orden.size() - 1; i >= 0; i--) {
             cartas.push(orden.get(i));
         }
@@ -47,6 +46,23 @@ public class Mazo {
 
     public CartaInglesa obtenerUnaCarta() {
         return cartas.empty() ? null : cartas.pop();
+    }
+
+    /** Restaura las cartas en su orden de reparto, sin crear otra baraja. */
+    public void restaurarCartas(ArrayList<CartaInglesa> guardadas) {
+        if (guardadas == null || guardadas.size() > 52 || guardadas.contains(null)) {
+            throw new IllegalArgumentException("Las cartas del mazo no son validas");
+        }
+        cargarEnOrden(guardadas);
+    }
+
+    public boolean estaVacio() { return cartas.empty(); }
+
+    /** La lista solo es temporal; el almacenamiento sigue siendo una Pila. */
+    public void barajar() {
+        ArrayList<CartaInglesa> mezcladas = getCartas();
+        Collections.shuffle(mezcladas);
+        cargarEnOrden(mezcladas);
     }
 
     public void ordenar() {

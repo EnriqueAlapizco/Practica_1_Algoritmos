@@ -8,6 +8,10 @@ public class Jugador {
 
     public Jugador(String nombre) { this.nombre = nombre; }
     public void plantarse() { plantado = true; }
+    void restaurarEstado(boolean plantado, ResultadoJugador resultado) {
+        this.plantado = plantado;
+        this.resultado = resultado;
+    }
     public boolean puedeJugar() { return !plantado && !mano.estaPasada(); }
     public String getNombre() { return nombre; }
     public Mano getMano() { return mano; }

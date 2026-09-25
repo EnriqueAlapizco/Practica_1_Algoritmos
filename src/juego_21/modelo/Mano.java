@@ -11,6 +11,11 @@ public class Mano {
         if (carta != null) cartas.push(carta);
     }
 
+    void restaurarCartas(ArrayList<CartaInglesa> guardadas) {
+        cartas.clear();
+        for (CartaInglesa carta : guardadas) cartas.push(carta);
+    }
+
     public int calcularPuntaje() {
         int total = 0;
         int ases = 0;

@@ -18,6 +18,7 @@ public class JuegoView extends BorderPane {
     private final Button btnNuevaPartida = new Button("Nueva partida");
     private final Button btnPedir = new Button("Pedir");
     private final Button btnPlantarse = new Button("Plantarse");
+    private final Button btnDeshacer = new Button("Deshacer");
     private final Label mensaje = new Label();
     private final PanelMano panelDealer = new PanelMano();
     private final HBox zonaJugadores = new HBox(8);
@@ -42,7 +43,7 @@ public class JuegoView extends BorderPane {
         setCenter(new VBox(12, panelDealer, zonaJugadores));
 
         mensaje.setStyle("-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;");
-        HBox acciones = new HBox(10, btnPedir, btnPlantarse);
+        HBox acciones = new HBox(10, btnPedir, btnPlantarse, btnDeshacer);
         acciones.setAlignment(Pos.CENTER);
         VBox inferior = new VBox(8, mensaje, acciones);
         inferior.setAlignment(Pos.CENTER);
@@ -82,10 +83,12 @@ public class JuegoView extends BorderPane {
         else mensaje.setText("Partida terminada");
         btnPedir.setDisable(terminada);
         btnPlantarse.setDisable(terminada);
+        btnDeshacer.setDisable(!juego.puedeDeshacer());
     }
 
     public ComboBox<Integer> getCantidadJugadores() { return cantidadJugadores; }
     public Button getBtnNuevaPartida() { return btnNuevaPartida; }
     public Button getBtnPedir() { return btnPedir; }
+    public Button getBtnDeshacer() { return btnDeshacer; }
     public Button getBtnPlantarse() { return btnPlantarse; }
 }

@@ -3,8 +3,10 @@ package juego_21.modelo;
 import DeckOfCards.CartaInglesa;
 import DeckOfCards.Mazo;
 import java.util.ArrayList;
+import practica_2_algoritmos.Pila;
 
 public class Juego {
+    private final Pila<EstadoJuego> historial = new Pila<>(52);
     private Mazo mazo;
     private final ArrayList<Jugador> jugadores = new ArrayList<>();
     private Mano manoDealer;
@@ -17,6 +19,7 @@ public class Juego {
         if (cantidadJugadores < 1 || cantidadJugadores > 4) {
             throw new IllegalArgumentException("La cantidad de jugadores debe estar entre 1 y 4");
         }
+        historial.clear();
         mazo = new Mazo();
         jugadores.clear();
         manoDealer = new Mano();
@@ -47,10 +50,13 @@ public class Juego {
     }
 
     public void pedirCarta() {
-        if (partidaTerminada) return;
+        if (partidaTerminada || mazo.estaVacio()) return;
+        guardarEstado();
         Jugador jugador = getJugadorActual();
         jugador.getMano().agregarCarta(sacarCartaVisible());
         if (jugador.getMano().calcularPuntaje() >= 21) {
+            // Solo se puede volver a un turno anterior si termino por pasarse.
+            if (jugador.getMano().tiene21()) historial.clear();
             jugador.plantarse();
             avanzarTurno();
         }
@@ -58,8 +64,24 @@ public class Juego {
 
     public void plantarse() {
         if (partidaTerminada) return;
+        historial.clear();
         getJugadorActual().plantarse();
         avanzarTurno();
+    }
+
+    private void guardarEstado() {
+        historial.push(new EstadoJuego(mazo, jugadores, manoDealer, turnoActual,
+                partidaTerminada));
+    }
+
+    public boolean puedeDeshacer() { return !historial.empty(); }
+
+    public void deshacer() {
+        if (!puedeDeshacer()) return;
+        EstadoJuego anterior = historial.pop();
+        anterior.restaurar(mazo, jugadores, manoDealer);
+        turnoActual = anterior.getTurnoActual();
+        partidaTerminada = anterior.isPartidaTerminada();
     }
 
     private CartaInglesa sacarCartaVisible() {
@@ -101,7 +123,9 @@ public class Juego {
 
         while (manoDealer.calcularPuntaje() < 17
                 || manoDealer.calcularPuntaje() == 17 && manoDealer.esSuave()) {
-            manoDealer.agregarCarta(sacarCartaVisible());
+            CartaInglesa carta = sacarCartaVisible();
+            if (carta == null) break;
+            manoDealer.agregarCarta(carta);
         }
     }
 

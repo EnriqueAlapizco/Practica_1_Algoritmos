@@ -18,6 +18,10 @@ public class JuegoController {
             juego.plantarse();
             vista.actualizar(juego);
         });
+        vista.getBtnDeshacer().setOnAction(evento -> {
+            juego.deshacer();
+            vista.actualizar(juego);
+        });
         vista.getBtnNuevaPartida().setOnAction(evento -> nuevaPartida());
         nuevaPartida();
     }
